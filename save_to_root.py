@@ -12,13 +12,13 @@ from ttgamma.utils.plotting import RebinHist, SetRangeHist, GroupBy
 # NOTE: your timestamps will differ!
 outputMC = accumulate(
     [
-        util.load("Outputs/output_MCSingleTop_run20230111_180407.coffea"),
-        util.load("Outputs/output_MCTTbar1l_run20230112_090237.coffea"), 
-        util.load("Outputs/output_MCTTbar2l_run20230111_224918.coffea"),
+        util.load("Outputs/output_MCOther_run20230112_085131.coffea"),      
+        util.load("Outputs/output_MCSingleTop_run20230111_180407.coffea"),  
+        util.load("Outputs/output_MCTTbar1l_run20230112_090237.coffea"),  
+        util.load("Outputs/output_MCTTbar2l_run20230111_224918.coffea"), 
         util.load("Outputs/output_MCTTGamma_run20230112_084311.coffea"),
         util.load("Outputs/output_MCWJets_run20230112_084341.coffea"),
         util.load("Outputs/output_MCZJets_run20230112_084126.coffea"),
-        util.load("Outputs/output_MCOther_run20230112_085131.coffea"),
     ]
 )
 
@@ -127,18 +127,34 @@ if __name__ == "__main__":
     h = outputMCHist['photon_chIso']
     h = h[{"lepFlavor":sum}]
     h = GroupBy(h, "category", "category", groupingCategory)
+<<<<<<< HEAD
         
     new_bins = np.array([h.axes['chIso'].edges[25], h.axes['chIso'].edges[52],
                          h.axes['chIso'].edges[100], h.axes['chIso'].edges[181],
                          h.axes['chIso'].edges[299], h.axes['chIso'].edges[399]])  # 1.14 is in the cutbased medium ID.   
+=======
+    
+    #for i, value in enumerate(h.axes['chIso'].edges):
+    #    print("Index: " + str(i) + ", value: " + str(value))
+    
+    new_bins = np.array([
+        h.axes['chIso'].edges[25],
+        h.axes['chIso'].edges[52],
+        h.axes['chIso'].edges[100],
+        h.axes['chIso'].edges[181],
+        h.axes['chIso'].edges[299],
+        h.axes['chIso'].edges[399],
+    ])  # 1.14 is in the cutbased medium ID.   
+    
+>>>>>>> 4c28ce9744ea75145cc687f09d14e07ca12e3858
     chIso_axis = hist.axis.Variable(new_bins, name='chIso', label=r"Charged Hadron Isolation");
 
     hData = outputDataHist['photon_chIso'][{'lepFlavor':sum}]
     hData = hData[{'category':sum,'systematic':sum,'dataset':sum}]
 
     outputFile = uproot.recreate(os.path.join(outdir, "Isolation_Output.root"))
-    outputFile["data_obs"] = hData
-
+    outputFile["data_obs"] = RebinHist(hData, chIso=chIso_axis)
+    
     for _category in ["MisID", "NonPrompt"]:
         for _systematic in systematics:
             histname = f"{_category}_{_systematic}" if (not f"{_systematic}" == 'nominal') else f"{_category}"

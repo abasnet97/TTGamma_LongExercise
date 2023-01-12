@@ -12,17 +12,17 @@ from ttgamma.utils.plotting import RebinHist, SetRangeHist, GroupBy
 # NOTE: your timestamps will differ!
 outputMC = accumulate(
     [
-        util.load("Outputs/output_MCOther_run20230110_162217.coffea"),      
-        util.load("Outputs/output_MCSingleTop_run20230110_170719.coffea"),  
-        util.load("Outputs/output_MCTTbar1l_run20230110_164315.coffea"),  
-        util.load("Outputs/output_MCTTbar2l_run20230110_170012.coffea"), 
-        util.load("Outputs/output_MCTTGamma_run20230110_171615.coffea"),
-        util.load("Outputs/output_MCWJets_run20230110_161311.coffea"),
-        util.load("Outputs/output_MCZJets_run20230110_155614.coffea"),
+        util.load("Outputs/output_MCSingleTop_run20230111_180407.coffea"),
+        util.load("Outputs/output_MCTTbar1l_run20230112_090237.coffea"), 
+        util.load("Outputs/output_MCTTbar2l_run20230111_224918.coffea"),
+        util.load("Outputs/output_MCTTGamma_run20230112_084311.coffea"),
+        util.load("Outputs/output_MCWJets_run20230112_084341.coffea"),
+        util.load("Outputs/output_MCZJets_run20230112_084126.coffea"),
+        util.load("Outputs/output_MCOther_run20230112_085131.coffea"),
     ]
 )
 
-outputData = util.load("Outputs/output_Data_run20230110_172734.coffea")
+outputData = util.load("Outputs/output_Data_run20230112_084123.coffea")
 
 groupingCategory = {
     "NonPrompt": [3j,4j],
@@ -127,8 +127,10 @@ if __name__ == "__main__":
     h = outputMCHist['photon_chIso']
     h = h[{"lepFlavor":sum}]
     h = GroupBy(h, "category", "category", groupingCategory)
-
-    new_bins = np.array([1.15, 2.5, 4.9, 9, 14.9, 20])  # 1.14 is in the cutbased medium ID.   
+        
+    new_bins = np.array([h.axes['chIso'].edges[25], h.axes['chIso'].edges[52],
+                         h.axes['chIso'].edges[100], h.axes['chIso'].edges[181],
+                         h.axes['chIso'].edges[299], h.axes['chIso'].edges[399]])  # 1.14 is in the cutbased medium ID.   
     chIso_axis = hist.axis.Variable(new_bins, name='chIso', label=r"Charged Hadron Isolation");
 
     hData = outputDataHist['photon_chIso'][{'lepFlavor':sum}]
